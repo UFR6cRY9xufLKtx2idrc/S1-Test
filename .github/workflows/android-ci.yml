@@ -33,7 +33,7 @@ jobs:
         id: build
         run: |
           set -o pipefail
-          ./gradlew assembleRelease --stacktrace 2>&1 | tee gradle-build.log
+          ./gradlew :app:assembleNormalDebug --stacktrace 2>&1 | tee gradle-build.log
 
       - name: Upload failure diagnostics
         if: failure() && steps.build.outcome == 'failure'
@@ -49,15 +49,15 @@ jobs:
       - name: Uploading Artifact
         uses: actions/upload-artifact@v7
         with:
-          name: app-normal-release.apk
-          path: ./app/build/outputs/apk/normal/release/app-normal-release.apk
+          name: app-normal-debug.apk
+          path: ./app/build/outputs/apk/normal/debug/app-normal-debug.apk
           if-no-files-found: error
 
       - name: Upload binaries to release
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: app/build/outputs/apk/normal/release/app-normal-release.apk
-          asset_name: app-normal-release-${{ github.run_number }}.apk
+          file: app/build/outputs/apk/normal/debug/app-normal-debug.apk
+          asset_name: app-normal-debug-${{ github.run_number }}.apk
           tag: ${{ github.ref_type == 'tag' && github.ref_name || 'ci-builds' }}
           overwrite: true
